@@ -12,7 +12,7 @@ export const DOCTORS = [
   { id: 2, name: 'Dr. James Wilson', specialization: 'Neurologist', department: 'Neurology', phone: '+1-555-0102', email: 'j.wilson@medicore.com', experience: 15, status: 'Active', patients: 38, schedule: 'Mon-Thu', avatar: 'JW', image: 'https://i.pravatar.cc/150?u=2' },
   { id: 3, name: 'Dr. Michael Brown', specialization: 'Orthopedic Surgeon', department: 'Orthopedics', phone: '+1-555-0103', email: 'm.brown@medicore.com', experience: 10, status: 'Active', patients: 52, schedule: 'Tue-Sat', avatar: 'MB', image: 'https://i.pravatar.cc/150?u=3' },
   { id: 4, name: 'Dr. Sarah Davis', specialization: 'Pediatrician', department: 'Pediatrics', phone: '+1-555-0104', email: 's.davis@medicore.com', experience: 8, status: 'Active', patients: 61, schedule: 'Mon-Fri', avatar: 'SD' },
-  { id: 5, name: 'Dr. Robert Lee', specialization: 'Emergency Physician', department: 'Emergency', phone: '+1-555-0105', email: 'r.lee@medicore.com', experience: 20, status: 'Active', patients: 89, schedule: 'Rotating', avatar: 'RL' },
+  { id: 5, name: 'Dr. Robert Zane', specialization: 'Emergency Physician', department: 'Emergency', phone: '+1-555-0105', email: 'r.zane@medicore.com', experience: 20, status: 'Active', patients: 89, schedule: 'Rotating', avatar: 'RZ' },
   { id: 6, name: 'Dr. Linda Martinez', specialization: 'Radiologist', department: 'Radiology', phone: '+1-555-0106', email: 'l.martinez@medicore.com', experience: 14, status: 'Active', patients: 33, schedule: 'Mon-Fri', avatar: 'LM' },
   { id: 7, name: 'Dr. David Thompson', specialization: 'General Surgeon', department: 'Surgery', phone: '+1-555-0107', email: 'd.thompson@medicore.com', experience: 18, status: 'On Leave', patients: 28, schedule: 'Mon-Wed', avatar: 'DT' },
   { id: 8, name: 'Dr. Jennifer White', specialization: 'Dermatologist', department: 'Dermatology', phone: '+1-555-0108', email: 'j.white@medicore.com', experience: 9, status: 'Active', patients: 41, schedule: 'Tue-Sat', avatar: 'JW' },
@@ -104,6 +104,23 @@ export const DOCTOR_SCHEDULES = [
   { id: 6, doctorId: 6, doctorName: 'Dr. Linda Martinez', workDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], startTime: '09:00 AM', endTime: '05:00 PM', daysOff: [], availableDays: ['2026-05-27', '2026-05-29'], maxPatientsPerDay: 5 },
   { id: 7, doctorId: 7, doctorName: 'Dr. David Thompson', workDays: ['Monday', 'Tuesday', 'Wednesday'], startTime: '08:00 AM', endTime: '03:00 PM', daysOff: ['Thursday', 'Friday', 'Saturday', 'Sunday'], availableDays: ['2026-05-27'], maxPatientsPerDay: 4 },
   { id: 8, doctorId: 8, doctorName: 'Dr. Jennifer White', workDays: ['Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], startTime: '10:00 AM', endTime: '06:00 PM', daysOff: ['Sunday', 'Monday'], availableDays: ['2026-05-28', '2026-05-29', '2026-05-30'], maxPatientsPerDay: 6 },
+];
+
+export const ROOMS = [
+  { id: 'RM101', number: '101', type: 'General Ward', department: 'Cardiology', floor: 1, beds: 4, status: 'Occupied',    patient: 'John Smith',      patientId: 'P001', admitDate: '2026-05-10', notes: 'Hypertension monitoring' },
+  { id: 'RM102', number: '102', type: 'Private',      department: 'Cardiology', floor: 1, beds: 1, status: 'Occupied',    patient: 'William Brown',   patientId: 'P005', admitDate: '2026-05-08', notes: 'Cardiac monitoring required' },
+  { id: 'RM103', number: '103', type: 'Private',      department: 'Cardiology', floor: 1, beds: 1, status: 'Occupied',    patient: 'Barbara Harris',  patientId: 'P009', admitDate: '2026-05-05', notes: 'Heart failure - close observation' },
+  { id: 'RM104', number: '104', type: 'General Ward', department: 'Cardiology', floor: 1, beds: 4, status: 'Available',   patient: '',                patientId: '',     admitDate: '',           notes: '' },
+  { id: 'RM201', number: '201', type: 'General Ward', department: 'Neurology',  floor: 2, beds: 3, status: 'Occupied',    patient: 'Robert Davis',    patientId: 'P003', admitDate: '2026-05-12', notes: 'Chronic migraine observation' },
+  { id: 'RM202', number: '202', type: 'Private',      department: 'Neurology',  floor: 2, beds: 1, status: 'Available',   patient: '',                patientId: '',     admitDate: '',           notes: '' },
+  { id: 'RM203', number: '203', type: 'General Ward', department: 'Neurology',  floor: 2, beds: 3, status: 'Maintenance', patient: '',                patientId: '',     admitDate: '',           notes: 'Electrical repairs in progress' },
+  { id: 'RM301', number: '301', type: 'ICU',          department: 'Emergency',  floor: 3, beds: 1, status: 'Critical',    patient: 'Patricia Miller', patientId: 'P006', admitDate: '2026-05-20', notes: 'Multiple trauma - critical care' },
+  { id: 'RM302', number: '302', type: 'ICU',          department: 'Emergency',  floor: 3, beds: 1, status: 'Available',   patient: '',                patientId: '',     admitDate: '',           notes: '' },
+  { id: 'RM303', number: '303', type: 'Emergency',    department: 'Emergency',  floor: 3, beds: 2, status: 'Available',   patient: '',                patientId: '',     admitDate: '',           notes: '' },
+  { id: 'RM401', number: '401', type: 'Pediatric',    department: 'Pediatrics', floor: 4, beds: 4, status: 'Available',   patient: '',                patientId: '',     admitDate: '',           notes: '' },
+  { id: 'RM402', number: '402', type: 'Private',      department: 'Pediatrics', floor: 4, beds: 1, status: 'Reserved',    patient: '',                patientId: '',     admitDate: '',           notes: 'Reserved for incoming admission' },
+  { id: 'RM501', number: '501', type: 'General Ward', department: 'Orthopedics',floor: 5, beds: 4, status: 'Available',   patient: '',                patientId: '',     admitDate: '',           notes: '' },
+  { id: 'RM502', number: '502', type: 'Isolation',    department: 'General',    floor: 5, beds: 1, status: 'Maintenance', patient: '',                patientId: '',     admitDate: '',           notes: 'Sanitization scheduled' },
 ];
 
 export const PRESCRIPTIONS = [

@@ -1,44 +1,64 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bell, Menu, Pill, CalendarDays, CheckCircle } from 'lucide-react';
+import { Bell, Menu, User, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useNotifications } from '../hooks/useNotifications';
 
 const pageTitles = {
-  '/': { title: 'Dashboard', subtitle: 'Welcome back! Here\'s what\'s happening today.' },
-  '/patients': { title: 'Patients', subtitle: 'Manage patient records and admissions.' },
-  '/doctors': { title: 'Doctors', subtitle: 'Medical staff directory and schedules.' },
-  '/appointments': { title: 'Appointments', subtitle: 'Schedule and manage patient appointments.' },
-  '/departments': { title: 'Departments', subtitle: 'Hospital department overview.' },
-  '/billing': { title: 'Billing & Invoices', subtitle: 'Track payments and generate invoices.' },
-  '/records': { title: 'Medical Records', subtitle: 'Patient diagnoses and prescriptions.' },
-  '/pharmacy': { title: 'Pharmacy', subtitle: 'Medicine inventory and stock management.' },
-  '/settings': { title: 'Settings', subtitle: 'Manage hospital profile and preferences.' },
+  '/':               { title: 'Dashboard',          subtitle: "Welcome back! Here's what's happening today." },
+  '/patients':       { title: 'Patients',            subtitle: 'Manage patient records and admissions.' },
+  '/doctors':        { title: 'Doctors',             subtitle: 'Medical staff directory and schedules.' },
+  '/appointments':   { title: 'Appointments',        subtitle: 'Schedule and manage patient appointments.' },
+  '/departments':    { title: 'Departments',         subtitle: 'Hospital department overview.' },
+  '/rooms':          { title: 'Rooms & Wards',       subtitle: 'Bed management and room occupancy.' },
+  '/billing':        { title: 'Billing & Invoices',  subtitle: 'Track payments and generate invoices.' },
+  '/records':        { title: 'Medical Records',     subtitle: 'Patient diagnoses and prescriptions.' },
+  '/pharmacy':       { title: 'Pharmacy',            subtitle: 'Medicine inventory and stock management.' },
+  '/inventory':      { title: 'General Inventory',   subtitle: 'PPE, cleaning supplies, linens & consumables.' },
+  '/notifications':  { title: 'Notifications',       subtitle: 'All your alerts and updates in one place.' },
+  '/lab':            { title: 'Laboratory',          subtitle: 'Lab test orders and results.' },
+  '/settings':       { title: 'Settings',            subtitle: 'Manage hospital profile and preferences.' },
 };
 
-export default function Header({ collapsed, setCollapsed, path }) {
-  const { user } = useAuth();
-  const meta = pageTitles[path] || { title: 'MediCore', subtitle: '' };
-  
-  const [showNotifs, setShowNotifs] = useState(false);
-  const notifRef = useRef();
+export default function Header({ collapsed, setCollapsed, mobileOpen, setMobileOpen, path }) {
+  const { user, profile, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const meta = (() => {
+    if (path === '/') {
+      const cleaned = (profile?.name || '').replace(/^Dr\.?\s+/i, '');
+      const first   = cleaned.split(' ')[0] || 'there';
+      const prefix  = profile?.role === 'doctor' ? 'Dr. ' : '';
+      return { title: `Welcome back, ${prefix}${first}!`, subtitle: "Here's what's happening today." };
+    }
+    return pageTitles[path] || { title: 'MediCore', subtitle: '' };
+  })();
+
+  const { unreadCount } = useNotifications();
+
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const userRef = useRef();
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (notifRef.current && !notifRef.current.contains(e.target)) setShowNotifs(false);
+      if (userRef.current && !userRef.current.contains(e.target)) setShowUserMenu(false);
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const notifications = [
-    { id: 1, title: 'Low Stock Alert', desc: 'Amoxicillin 500mg is running critically low.', time: '10m ago', type: 'warning', icon: <Pill size={14}/> },
-    { id: 2, title: 'New Appointment', desc: 'Sarah Davis booked a consultation for tomorrow.', time: '1h ago', type: 'info', icon: <CalendarDays size={14}/> },
-    { id: 3, title: 'System Update', desc: 'MediCore HMS was updated to v1.0.2 successfully.', time: '2h ago', type: 'success', icon: <CheckCircle size={14}/> },
-  ];
+  const handleLogout = () => { logout(); navigate('/login'); };
 
   return (
     <header className="header">
       <div className="header-left">
-        <button className="toggle-btn" onClick={() => setCollapsed(c => !c)}>
+        <button
+          className="toggle-btn"
+          onClick={() => {
+            if (window.innerWidth <= 768) setMobileOpen(o => !o);
+            else setCollapsed(c => !c);
+          }}
+        >
           <Menu size={17} />
         </button>
         <div>
@@ -46,42 +66,62 @@ export default function Header({ collapsed, setCollapsed, path }) {
           <div className="page-subtitle">{meta.subtitle}</div>
         </div>
       </div>
+
       <div className="header-right">
-        <div style={{ position: 'relative' }} ref={notifRef}>
-          <button className="header-btn" title="Notifications" onClick={() => setShowNotifs(!showNotifs)}>
-            <Bell size={16} />
-            <span className="notif-dot" />
+        {/* Notification Bell — navigates to dedicated page */}
+        <button
+          className="header-btn"
+          title="Notifications"
+          onClick={() => navigate('/notifications')}
+          style={{ position: 'relative' }}
+        >
+          <Bell size={16} />
+          {unreadCount > 0 && (
+            <span style={{
+              position: 'absolute', top: 2, right: 2,
+              minWidth: 16, height: 16, borderRadius: 8,
+              background: '#ff4757', color: 'white',
+              fontSize: 9, fontWeight: 800,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              padding: '0 3px', lineHeight: 1, pointerEvents: 'none',
+            }}>
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </button>
+
+        {/* User Menu */}
+        <div style={{ position: 'relative' }} ref={userRef}>
+          <button
+            className="user-avatar-btn"
+            title="User menu"
+            onClick={() => setShowUserMenu(v => !v)}
+          >
+            <div className="user-avatar-circle">
+              {user?.email ? user.email.substring(0, 2).toUpperCase() : 'U'}
+            </div>
           </button>
-          
-          {showNotifs && (
-            <div className="notif-dropdown">
-              <div className="notif-header">
-                <div style={{ fontWeight: 600, fontSize: 13 }}>Notifications</div>
-                <button style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: 11, cursor: 'pointer', fontWeight: 600 }}>Mark all read</button>
+
+          {showUserMenu && (
+            <div className="user-menu-dropdown">
+              <div className="user-menu-header">
+                <div className="user-avatar-large">
+                  {user?.email ? user.email.substring(0, 2).toUpperCase() : 'U'}
+                </div>
+                <div>
+                  <div className="user-menu-name">{profile?.name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'User'}</div>
+                  <div className="user-menu-role">{profile?.role || user?.user_metadata?.role || 'Admin'}</div>
+                </div>
               </div>
-              <div className="notif-list">
-                {notifications.map(n => (
-                  <div key={n.id} className="notif-item">
-                    <div className={`notif-icon ${n.type}`}>{n.icon}</div>
-                    <div style={{ flex: 1 }}>
-                      <div className="notif-title">{n.title}</div>
-                      <div className="notif-desc">{n.desc}</div>
-                      <div className="notif-time">{n.time}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="notif-footer">View all notifications</div>
+              <div className="user-menu-divider" />
+              <button className="user-menu-item" onClick={() => { navigate('/settings'); setShowUserMenu(false); }}>
+                <User size={16} /><span>Profile & Settings</span>
+              </button>
+              <button className="user-menu-item logout" onClick={handleLogout}>
+                <LogOut size={16} /><span>Logout</span>
+              </button>
             </div>
           )}
-        </div>
-        
-        <div className="user-pill">
-          <div className="user-avatar">{user?.avatar}</div>
-          <div>
-            <div className="user-name">{user?.name}</div>
-            <div className="user-role">{user?.role}</div>
-          </div>
         </div>
       </div>
     </header>

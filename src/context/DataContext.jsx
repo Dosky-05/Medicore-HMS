@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import {
   PATIENTS, DOCTORS, APPOINTMENTS, INVOICES,
-  MEDICAL_RECORDS, PHARMACY_ITEMS, DEPARTMENTS, DOCTOR_SCHEDULES, PRESCRIPTIONS
+  MEDICAL_RECORDS, PHARMACY_ITEMS, DEPARTMENTS, DOCTOR_SCHEDULES, PRESCRIPTIONS, ROOMS
 } from '../data/mockData';
 
 const DataContext = createContext(null);
@@ -17,6 +17,7 @@ export function DataProvider({ children }) {
   const [departments, setDepartments] = useLocalStorage('hms_departments', DEPARTMENTS);
   const [schedules, setSchedules] = useLocalStorage('hms_schedules', DOCTOR_SCHEDULES);
   const [prescriptions, setPrescriptions] = useLocalStorage('hms_prescriptions', PRESCRIPTIONS);
+  const [rooms, setRooms] = useLocalStorage('hms_rooms', ROOMS);
 
   const generateId = (prefix) => `${prefix}${Date.now()}`;
 
@@ -26,7 +27,7 @@ export function DataProvider({ children }) {
   const deletePatient = (id) => setPatients(prev => prev.filter(p => p.id !== id));
 
   // Doctors CRUD
-  const addDoctor = (d) => setDoctors(prev => [...prev, { ...d, id: Date.now() }]);
+  const addDoctor = (d) => setDoctors(prev => [...prev, { id: Date.now(), ...d }]);
   const updateDoctor = (id, data) => setDoctors(prev => prev.map(d => d.id === id ? { ...d, ...data } : d));
   const deleteDoctor = (id) => setDoctors(prev => prev.filter(d => d.id !== id));
 
@@ -61,6 +62,16 @@ export function DataProvider({ children }) {
   const deletePrescription = (id) => setPrescriptions(prev => prev.filter(p => p.id !== id));
   const getPrescriptionsByPatient = (patientId) => prescriptions.filter(p => p.patientId === patientId);
 
+  // Rooms CRUD
+  const addRoom = (r) => setRooms(prev => [...prev, { ...r, id: generateId('RM') }]);
+  const updateRoom = (id, data) => setRooms(prev => prev.map(r => r.id === id ? { ...r, ...data } : r));
+  const deleteRoom = (id) => setRooms(prev => prev.filter(r => r.id !== id));
+
+  // Departments CRUD
+  const addDepartment = (d) => setDepartments(prev => [...prev, { ...d, id: Math.max(0, ...prev.map(x => x.id)) + 1 }]);
+  const updateDepartment = (id, data) => setDepartments(prev => prev.map(d => d.id === id ? { ...d, ...data } : d));
+  const deleteDepartment = (id) => setDepartments(prev => prev.filter(d => d.id !== id));
+
   return (
     <DataContext.Provider value={{
       patients, addPatient, updatePatient, deletePatient,
@@ -69,9 +80,10 @@ export function DataProvider({ children }) {
       invoices, addInvoice, updateInvoice,
       medicalRecords, addRecord, updateRecord, deleteRecord,
       pharmacy, addPharmacyItem, updatePharmacyItem, deletePharmacyItem,
-      departments, setDepartments,
+      departments, addDepartment, updateDepartment, deleteDepartment,
       schedules, addSchedule, updateSchedule, deleteSchedule, getScheduleByDoctor,
       prescriptions, addPrescription, updatePrescription, deletePrescription, getPrescriptionsByPatient,
+      rooms, addRoom, updateRoom, deleteRoom,
     }}>
       {children}
     </DataContext.Provider>

@@ -368,13 +368,14 @@ body {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--info));
+  background: var(--accent-glow);
+  border: 1px solid var(--border-hover);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
   font-weight: 700;
-  color: white;
+  color: var(--accent);
 }
 
 .user-menu-dropdown {
@@ -403,13 +404,14 @@ body {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--info));
+  background: var(--accent-glow);
+  border: 1px solid var(--border-hover);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
   font-weight: 700;
-  color: white;
+  color: var(--accent);
   flex-shrink: 0;
 }
 
@@ -1053,7 +1055,8 @@ select.form-control option {
   justify-content: center;
   font-size: 12px;
   font-weight: 700;
-  color: white;
+  color: var(--accent);
+  background: var(--accent-glow);
   flex-shrink: 0;
 }
 
@@ -1217,25 +1220,25 @@ select.form-control option {
 }
 
 .login-card:hover {
-  box-shadow: 0 20px 50px rgba(0, 212, 255, 0.08);
-  border-color: rgba(0, 212, 255, 0.2);
+  box-shadow: 0 20px 50px var(--accent-glow);
+  border-color: var(--border-hover);
 }
 
 .login-page .form-control {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
   padding: 12px 16px;
   font-size: 14px;
   color: var(--text-primary);
 }
 
 .login-page .form-control:hover {
-  border-color: rgba(255, 255, 255, 0.22);
+  border-color: var(--border-hover);
 }
 
 .login-page .form-control:focus {
   border-color: var(--accent);
-  background: rgba(0, 212, 255, 0.05);
+  background: var(--accent-glow);
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
@@ -1246,13 +1249,13 @@ select.form-control option {
 #login-btn {
   background: var(--accent-glow) !important;
   color: var(--accent) !important;
-  border: 1px solid rgba(0, 212, 255, 0.25) !important;
+  border: 1px solid var(--border-hover) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #login-btn:hover:not(:disabled) {
-  background: rgba(0, 212, 255, 0.15) !important;
-  box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
+  background: var(--accent-glow) !important;
+  box-shadow: 0 8px 25px var(--accent-glow);
   transform: translateY(-2px) scale(1.01);
 }
 
@@ -1370,8 +1373,7 @@ select.form-control option {
 @media (max-width: 600px) {
   .login-split-right {
     padding: 20px;
-    align-items: flex-start;
-    padding-top: 40px;
+    align-items: center;
   }
 
   .login-card {
@@ -1396,7 +1398,6 @@ select.form-control option {
 @media (max-width: 400px) {
   .login-split-right {
     padding: 16px;
-    padding-top: 32px;
   }
 
   .login-card {

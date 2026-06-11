@@ -29,11 +29,11 @@ const EMPTY_SCHED = {
 };
 
 const AVATARCOLORS = [
-  'linear-gradient(135deg,#00d4ff,#0099cc)',
-  'linear-gradient(135deg,#6c63ff,#4a43cc)',
-  'linear-gradient(135deg,#ff6b6b,#cc4444)',
-  'linear-gradient(135deg,#00d68f,#00a86b)',
-  'linear-gradient(135deg,#ffb830,#cc8800)',
+  'var(--accent-glow)',
+  'var(--accent-glow)',
+  'var(--accent-glow)',
+  'var(--accent-glow)',
+  'var(--accent-glow)',
   'linear-gradient(135deg,#f783ac,#cc5580)',
 ];
 
@@ -236,11 +236,11 @@ export default function Doctors() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 16 }}>
         {filtered.map(d => (
           <div key={d.id} className="card" style={{ padding: 0, overflow: 'hidden' }}>
-            <div style={{ height: 4, background: getGrad(d.name) }} />
+            <div style={{ height: 4, background: 'var(--accent)' }} />
             <div style={{ padding: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <div className="avatar" style={{ width: 48, height: 48, borderRadius: 12, background: getGrad(d.name), fontSize: 14, overflow: 'hidden' }}>
+                  <div className="avatar" style={{ width: 48, height: 48, borderRadius: 12, fontSize: 14, overflow: 'hidden' }}>
                     {d.image ? <img src={d.image} alt={d.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : d.avatar}
                   </div>
                   <div>

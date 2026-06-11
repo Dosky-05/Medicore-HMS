@@ -576,11 +576,7 @@ export default function Settings() {
                       <tr key={s.id} style={{ opacity: s.is_active ? 1 : 0.5 }}>
                         <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                            <div className="avatar" style={{
-                              background: `${ROLE_META[s.role]?.color || '#888'}22`,
-                              color: ROLE_META[s.role]?.color || '#888',
-                              fontSize: 11,
-                            }}>
+                            <div className="avatar" style={{ background: 'var(--accent-glow)', color: 'var(--accent)', fontSize: 11 }}>
                               {s.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                             </div>
                             <div>
@@ -825,7 +821,7 @@ export default function Settings() {
                       <tr key={p.id} style={{ opacity: p.is_active ? 1 : 0.5 }}>
                         <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                            <div className="avatar" style={{ background: 'rgba(0,214,143,0.15)', color: '#00d68f', fontSize: 11 }}>
+                            <div className="avatar" style={{ background: 'var(--accent-glow)', color: 'var(--accent)', fontSize: 11 }}>
                               {p.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                             </div>
                             <div>
@@ -890,9 +886,9 @@ export default function Settings() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
               <div style={{
                 width: 56, height: 56, borderRadius: 14,
-                background: `${ROLE_META[profile?.role]?.color || '#00d4ff'}22`,
+                background: 'var(--accent-glow)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 18, fontWeight: 700, color: ROLE_META[profile?.role]?.color || '#00d4ff',
+                fontSize: 18, fontWeight: 700, color: 'var(--accent)',
               }}>
                 {user?.email ? user.email.substring(0, 2).toUpperCase() : 'U'}
               </div>

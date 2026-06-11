@@ -163,17 +163,13 @@ export default function Patients() {
     closeModal();
   };
 
-  const avatarColor = (name) => {
-    const colors = ['#00d4ff', '#6c63ff', '#ff6b6b', '#00d68f', '#ffb830', '#f783ac'];
-    return colors[(name?.charCodeAt(0) || 0) % colors.length];
-  };
 
   const SourceBadge = ({ source }) => source === 'portal' ? (
-    <span style={{ display:'inline-flex', alignItems:'center', gap:3, background:'rgba(0,214,143,0.12)', color:'#00d68f', padding:'1px 6px', borderRadius:20, fontSize:10, fontWeight:700 }}>
+    <span style={{ display:'inline-flex', alignItems:'center', gap:3, background:'var(--accent-glow)', color:'var(--accent)', padding:'1px 6px', borderRadius:20, fontSize:10, fontWeight:700 }}>
       <Smartphone size={9}/> Portal
     </span>
   ) : (
-    <span style={{ display:'inline-flex', alignItems:'center', gap:3, background:'rgba(108,99,255,0.12)', color:'#6c63ff', padding:'1px 6px', borderRadius:20, fontSize:10, fontWeight:700 }}>
+    <span style={{ display:'inline-flex', alignItems:'center', gap:3, background:'var(--accent-glow)', color:'var(--accent)', padding:'1px 6px', borderRadius:20, fontSize:10, fontWeight:700 }}>
       <UserPlus size={9}/> Staff
     </span>
   );
@@ -225,7 +221,7 @@ export default function Patients() {
                 <tr key={p.id}>
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <div className="avatar" style={{ background: `linear-gradient(135deg,${avatarColor(p.name)},#6c63ff)` }}>
+                      <div className="avatar" style={{ background: 'var(--accent-glow)', color: 'var(--accent)' }}>
                         {p.name.split(' ').map(n => n[0]).join('')}
                       </div>
                       <div>
@@ -381,7 +377,7 @@ export default function Patients() {
       {modal === 'view' && selected && (
         <Modal title="Patient Details" onClose={closeModal} footer={<button className="btn btn-ghost" onClick={closeModal}>Close</button>}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 20, paddingBottom: 20, borderBottom: '1px solid var(--border)' }}>
-            <div className="avatar" style={{ width: 56, height: 56, borderRadius: 14, fontSize: 18, background: `linear-gradient(135deg,${avatarColor(selected.name)},#6c63ff)` }}>
+            <div className="avatar" style={{ width: 56, height: 56, borderRadius: 14, fontSize: 18 }}>
               {selected.name.split(' ').map(n => n[0]).join('')}
             </div>
             <div style={{ flex: 1 }}>

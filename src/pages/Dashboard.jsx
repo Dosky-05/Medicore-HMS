@@ -272,7 +272,7 @@ export default function Dashboard() {
                   <tr key={p.id} onClick={() => navigate('/patients')} style={{ cursor:'pointer' }}>
                     <td>
                       <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                        <div className="avatar" style={{ background:'linear-gradient(135deg,#00d4ff,#6c63ff)', fontSize:11 }}>
+                        <div className="avatar" style={{ fontSize:11 }}>
                           {p.name.split(' ').map(n => n[0]).join('')}
                         </div>
                         <div>

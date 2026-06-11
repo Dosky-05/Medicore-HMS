@@ -253,11 +253,11 @@ export default function Appointments() {
                 <tr key={a.id}>
                   <td>
                     {a.source === 'portal' ? (
-                      <span style={{ display:'inline-flex', alignItems:'center', gap:4, background:'rgba(0,214,143,0.12)', color:'#00d68f', padding:'3px 8px', borderRadius:20, fontSize:11, fontWeight:700 }}>
+                      <span style={{ display:'inline-flex', alignItems:'center', gap:4, background:'var(--accent-glow)', color:'var(--accent)', padding:'3px 8px', borderRadius:20, fontSize:11, fontWeight:700 }}>
                         <Smartphone size={10}/> Portal
                       </span>
                     ) : (
-                      <span style={{ background:'rgba(108,99,255,0.12)', color:'#6c63ff', padding:'3px 8px', borderRadius:20, fontSize:11, fontWeight:600 }}>
+                      <span style={{ background:'var(--accent-glow)', color:'var(--accent)', padding:'3px 8px', borderRadius:20, fontSize:11, fontWeight:600 }}>
                         Staff
                       </span>
                     )}
@@ -268,7 +268,7 @@ export default function Appointments() {
                   <td style={{ color:'var(--accent)', fontSize:12 }}>{a.date}</td>
                   <td style={{ fontSize:12 }}>{a.time}</td>
                   <td>
-                    <span style={{ background:'rgba(108,99,255,0.15)', color:'#6c63ff', padding:'3px 8px', borderRadius:20, fontSize:11, fontWeight:600 }}>{a.type}</span>
+                    <span style={{ background:'var(--accent-glow)', color:'var(--accent)', padding:'3px 8px', borderRadius:20, fontSize:11, fontWeight:600 }}>{a.type}</span>
                   </td>
                   <td><Badge status={a.status}/></td>
                   <td>
@@ -276,7 +276,7 @@ export default function Appointments() {
                       {a.source === 'portal' && a.status === 'Scheduled' && (
                         <button
                           className="btn btn-sm"
-                          style={{ background:'rgba(0,214,143,0.12)', color:'#00d68f', border:'1px solid rgba(0,214,143,0.3)', fontSize:11, padding:'3px 10px', borderRadius:6, cursor:'pointer', fontWeight:600 }}
+                          style={{ background:'var(--accent-glow)', color:'var(--accent)', border:'1px solid var(--border-hover)', fontSize:11, padding:'3px 10px', borderRadius:6, cursor:'pointer', fontWeight:600 }}
                           onClick={() => quickConfirm(a)}
                           title="Confirm this booking"
                         >
@@ -286,7 +286,7 @@ export default function Appointments() {
                       {a.status === 'Completed' && (role === 'doctor' || role === 'admin') && (
                         <button
                           className="btn btn-sm"
-                          style={{ background:'rgba(108,99,255,0.12)', color:'#6c63ff', border:'1px solid rgba(108,99,255,0.3)', fontSize:11, padding:'3px 10px', borderRadius:6, cursor:'pointer', fontWeight:600, display:'inline-flex', alignItems:'center', gap:4 }}
+                          style={{ background:'var(--accent-glow)', color:'var(--accent)', border:'1px solid var(--border-hover)', fontSize:11, padding:'3px 10px', borderRadius:6, cursor:'pointer', fontWeight:600, display:'inline-flex', alignItems:'center', gap:4 }}
                           onClick={() => openPrescribe(a)}
                           title="Write prescription"
                         >

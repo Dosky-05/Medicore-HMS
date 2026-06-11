@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Eye, EyeOff, HeartPulse, LogIn } from 'lucide-react';
 
@@ -177,13 +177,6 @@ export default function PortalLogin() {
               }
             </button>
           </form>
-
-          <div className="login-portal-divider">
-            <span>Are you a staff member?</span>
-            <Link to="/login" className="portal-staff-link">
-              Staff Login →
-            </Link>
-          </div>
 
         </div>
       </div>

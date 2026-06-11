@@ -159,14 +159,18 @@ export default function Dashboard() {
     return result.length ? result : [{ name: 'Consultation', value: 1 }];
   }, [allAppointments, isDoctor, myDoctorName]);
 
-  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  const now   = new Date();
+  const today = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  const hour  = now.getHours();
+  const timeGreeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const displayName  = myDoctorName || profile?.name || 'there';
 
   return (
     <div>
       <div className="page-header">
         <div>
           <h1 className="page-heading" style={{ display:'flex', alignItems:'center', gap:10 }}>
-            <Activity size={22} color="var(--accent)"/> Overview
+            <Activity size={22} color="var(--accent)"/> {timeGreeting}, {displayName} 👋
           </h1>
           <p className="page-desc">{today} — here's what's happening at MediCore today.</p>
         </div>

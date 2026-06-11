@@ -356,13 +356,13 @@ export default function Appointments() {
               <label className="form-label" style={{ margin:0 }}><Pill size={14}/> Medicines *</label>
               <button type="button" onClick={addMed} style={{ background:'none', border:'none', color:'var(--accent)', fontSize:12, cursor:'pointer', fontWeight:600, padding:0 }}>+ Add Medicine</button>
             </div>
-            <div style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr 28px', gap:'4px 6px', marginBottom:4 }}>
+            <div className="rx-med-header rx-med-row">
               {['Name','Dose','Frequency','Duration',''].map(h => (
                 <div key={h} style={{ fontSize:10, color:'var(--text-muted)', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.05em' }}>{h}</div>
               ))}
             </div>
             {rxForm.medicines.map((med, i) => (
-              <div key={i} style={{ display:'grid', gridTemplateColumns:'2fr 1fr 1fr 1fr 28px', gap:'4px 6px', marginBottom:6 }}>
+              <div key={i} className="rx-med-row" style={{ marginBottom:6 }}>
                 <input className="form-control" placeholder="e.g. Amoxicillin" value={med.name}      onChange={e=>updateMed(i,'name',e.target.value)}      style={{ fontSize:12 }}/>
                 <input className="form-control" placeholder="500mg"            value={med.dose}      onChange={e=>updateMed(i,'dose',e.target.value)}      style={{ fontSize:12 }}/>
                 <input className="form-control" placeholder="3× daily"         value={med.frequency} onChange={e=>updateMed(i,'frequency',e.target.value)} style={{ fontSize:12 }}/>

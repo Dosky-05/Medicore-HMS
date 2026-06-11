@@ -60,7 +60,7 @@ export default function PortalLayout({ children, patient }) {
     document.documentElement.setAttribute('data-theme', next);
   };
 
-  const handleLogout = async () => { await logout(); navigate('/portal/login'); };
+  const handleLogout = async () => { await logout(); navigate('/', { replace: true }); navigate('/portal/login'); };
 
   // Close avatar dropdown on outside click
   useEffect(() => {

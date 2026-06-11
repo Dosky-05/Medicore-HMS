@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Eye, EyeOff, LogIn, X, Mail } from 'lucide-react';
 import heroImage from '../assets/login_hero.png';
@@ -26,7 +26,7 @@ export default function Login() {
     setLoading(true);
     const result = await login(form.email, form.password);
     setLoading(false);
-    if (result.success) navigate(result.userType === 'patient' ? '/portal' : '/');
+    if (result.success) navigate(result.userType === 'patient' ? '/portal' : '/dashboard');
     else setError(result.error);
   };
 
@@ -156,12 +156,6 @@ export default function Login() {
             <strong style={{ color: 'var(--text-primary)' }}>Settings → System</strong> to change it.
           </div>
 
-          <div className="login-portal-divider">
-            <span>Are you a patient?</span>
-            <Link to="/portal/login" className="login-portal-link">
-              Access Patient Portal →
-            </Link>
-          </div>
         </div>
       </div>
     </div>

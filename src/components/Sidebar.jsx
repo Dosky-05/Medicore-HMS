@@ -9,7 +9,7 @@ import {
 // roles: which roles can see this item (omit = all roles)
 const navItems = [
   { label: 'Overview', section: true },
-  { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { label: 'Management', section: true },
   { path: '/patients',     label: 'Patients',         icon: Users,         roles: ['admin', 'doctor', 'nurse', 'receptionist'] },
   { path: '/doctors',      label: 'Doctors',          icon: UserCog,       roles: ['admin'] },
@@ -38,7 +38,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
 
   const closeMobile = () => setMobileOpen(false);
 
-  const handleLogout = () => { logout(); navigate('/login'); };
+  const handleLogout = () => { logout(); navigate('/', { replace: true }); navigate('/login'); };
 
   const handleNav = (path) => {
     navigate(path);

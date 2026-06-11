@@ -3,14 +3,34 @@ import { supabase } from '../supabaseClient';
 
 const AuthContext = createContext(null);
 
-export function AuthProvider({ children }) {
-  const [user, setUser]                   = useState(null);
-  const [profile, setProfile]             = useState(null);         // staff profile
-  const [patientProfile, setPatientProfile] = useState(null);       // patient profile
-  const [loading, setLoading]             = useState(true);
+const PROFILE_CACHE_KEY = 'hms_profile_cache';
+const USER_CACHE_KEY    = 'hms_user_cache';
 
-  // Checks staff_profiles first, then patient_profiles.
-  // Returns { type: 'staff'|'patient'|null, data }
+function readProfileCache() {
+  try { return JSON.parse(localStorage.getItem(PROFILE_CACHE_KEY)); } catch { return null; }
+}
+function writeProfileCache(type, data) {
+  try { localStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify({ type, data })); } catch {}
+}
+function clearProfileCache() {
+  try { localStorage.removeItem(PROFILE_CACHE_KEY); localStorage.removeItem(USER_CACHE_KEY); } catch {}
+}
+function readUserCache() {
+  try { return JSON.parse(localStorage.getItem(USER_CACHE_KEY)); } catch { return null; }
+}
+function writeUserCache(user) {
+  try { localStorage.setItem(USER_CACHE_KEY, JSON.stringify(user)); } catch {}
+}
+
+export function AuthProvider({ children }) {
+  const cached     = readProfileCache();
+  const cachedUser = readUserCache();
+  const [user, setUser]                     = useState(cachedUser ?? null);
+  const [profile, setProfile]               = useState(cached?.type === 'staff'   ? cached.data : null);
+  const [patientProfile, setPatientProfile] = useState(cached?.type === 'patient' ? cached.data : null);
+  const [loading, setLoading]               = useState(!cached);
+
+  // Fetches both profiles in parallel — one round trip instead of two sequential.
   const resolveProfile = async (userId) => {
     if (!userId) {
       setProfile(null);
@@ -18,48 +38,43 @@ export function AuthProvider({ children }) {
       return { type: null, data: null };
     }
 
-    const { data: staffData } = await supabase
-      .from('staff_profiles')
-      .select('*')
-      .eq('id', userId)
-      .single();
+    const [{ data: staffData }, { data: patientData }] = await Promise.all([
+      supabase.from('staff_profiles').select('*').eq('id', userId).single(),
+      supabase.from('patient_profiles').select('*').eq('id', userId).single(),
+    ]);
 
     if (staffData) {
       setProfile(staffData);
       setPatientProfile(null);
+      writeProfileCache('staff', staffData);
       return { type: 'staff', data: staffData };
     }
-
-    const { data: patientData } = await supabase
-      .from('patient_profiles')
-      .select('*')
-      .eq('id', userId)
-      .single();
-
     if (patientData) {
       setPatientProfile(patientData);
       setProfile(null);
+      writeProfileCache('patient', patientData);
       return { type: 'patient', data: patientData };
     }
 
     setProfile(null);
     setPatientProfile(null);
+    clearProfileCache();
     return { type: null, data: null };
   };
 
   useEffect(() => {
-    const init = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-      await resolveProfile(session?.user?.id ?? null);
-      setLoading(false);
-    };
-    init();
-
+    // Single source of truth — onAuthStateChange fires INITIAL_SESSION on mount,
+    // so no separate getSession() call needed.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user ?? null);
-      await resolveProfile(session?.user?.id ?? null);
-      setLoading(false);
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      if (currentUser) writeUserCache(currentUser);
+      else clearProfileCache();
+      try {
+        await resolveProfile(currentUser?.id ?? null);
+      } finally {
+        setLoading(false);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -80,6 +95,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
+    clearProfileCache();
     await supabase.auth.signOut();
   };
 
@@ -178,7 +194,17 @@ export function AuthProvider({ children }) {
       deactivatePatient, reactivatePatient,
       resetStaffPassword, refreshProfile,
     }}>
-      {!loading && children}
+      {loading
+        ? (
+          <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+              <img src="/Logo.png" alt="MediCore" style={{ width: 48, height: 48, objectFit: 'contain', opacity: 0.8 }} />
+              <div style={{ width: 32, height: 32, border: '3px solid var(--border)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+            </div>
+          </div>
+        )
+        : children
+      }
     </AuthContext.Provider>
   );
 }

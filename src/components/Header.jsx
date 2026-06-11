@@ -25,7 +25,7 @@ export default function Header({ collapsed, setCollapsed, mobileOpen, setMobileO
   const navigate = useNavigate();
 
   const meta = (() => {
-    if (path === '/') {
+    if (path === '/' || path === '/dashboard') {
       const cleaned = (profile?.name || '').replace(/^Dr\.?\s+/i, '');
       const first   = cleaned.split(' ')[0] || 'there';
       const prefix  = profile?.role === 'doctor' ? 'Dr. ' : '';
@@ -47,7 +47,7 @@ export default function Header({ collapsed, setCollapsed, mobileOpen, setMobileO
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLogout = () => { logout(); navigate('/login'); };
+  const handleLogout = () => { logout(); navigate('/', { replace: true }); navigate('/login'); };
 
   return (
     <header className="header">

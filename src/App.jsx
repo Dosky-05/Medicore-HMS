@@ -30,6 +30,7 @@ import MyMedicalRecords from './pages/portal/MyMedicalRecords';
 import MyProfile from './pages/portal/MyProfile';
 import PortalNotifications from './pages/portal/PortalNotifications';
 import { usePortalPatient } from './hooks/usePortalPatient';
+import LandingPage from './pages/LandingPage';
 
 function ProtectedLayout() {
   const { user, userType, loading } = useAuth();
@@ -49,6 +50,7 @@ function ProtectedLayout() {
         <main className="page-body">
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/patients" element={<Patients />} />
             <Route path="/doctors" element={<Doctors />} />
             <Route path="/appointments" element={<Appointments />} />
@@ -104,11 +106,11 @@ export default function App() {
       <AuthProvider>
         <DataProvider>
           <Routes>
+            <Route path="/"           element={<LandingPage />} />
             <Route path="/login"      element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/portal/login" element={<PortalLogin />} />
             <Route path="/portal/*"    element={<PortalWrapper />} />
             <Route path="/*"           element={<ProtectedLayout />} />
-
           </Routes>
         </DataProvider>
       </AuthProvider>
@@ -119,5 +121,5 @@ export default function App() {
 function PublicRoute({ children }) {
   const { user, userType } = useAuth();
   if (!user) return children;
-  return <Navigate to={userType === 'patient' ? '/portal' : '/'} replace />;
+  return <Navigate to={userType === 'patient' ? '/portal' : '/dashboard'} replace />;
 }

@@ -63,8 +63,9 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    // Single source of truth — onAuthStateChange fires INITIAL_SESSION on mount,
-    // so no separate getSession() call needed.
+    // Safety net — if onAuthStateChange never fires or Supabase hangs, stop the spinner after 6s
+    const fallback = setTimeout(() => setLoading(false), 6000);
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       const currentUser = session?.user ?? null;
       setUser(currentUser);
@@ -73,11 +74,12 @@ export function AuthProvider({ children }) {
       try {
         await resolveProfile(currentUser?.id ?? null);
       } finally {
+        clearTimeout(fallback);
         setLoading(false);
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => { clearTimeout(fallback); subscription.unsubscribe(); };
   }, []);
 
   const login = async (email, password) => {
@@ -96,6 +98,9 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     clearProfileCache();
+    setUser(null);
+    setProfile(null);
+    setPatientProfile(null);
     await supabase.auth.signOut();
   };
 

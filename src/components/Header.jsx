@@ -47,7 +47,7 @@ export default function Header({ collapsed, setCollapsed, mobileOpen, setMobileO
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLogout = () => { logout(); navigate('/', { replace: true }); navigate('/login'); };
+  const handleLogout = async () => { await logout(); navigate('/', { replace: true }); navigate('/login'); };
 
   return (
     <header className="header">

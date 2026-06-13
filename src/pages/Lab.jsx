@@ -37,7 +37,9 @@ const TYPE_COLOR = {
 
 export default function Lab() {
   const { profile } = useAuth();
-  const isAdmin = profile?.role === 'admin';
+  const isAdmin  = profile?.role === 'admin';
+  const isDoctor = profile?.role === 'doctor';
+  const myName   = isDoctor ? (profile?.name || null) : null;
 
   const [orders,       setOrders]       = useState([]);
   const [loading,      setLoading]      = useState(true);
@@ -66,12 +68,13 @@ export default function Lab() {
     const matchS = o.patient_name.toLowerCase().includes(q) ||
                    o.test_name.toLowerCase().includes(q) ||
                    o.ordered_by.toLowerCase().includes(q);
-    const matchF = filterStatus === 'All' || o.status === filterStatus;
-    return matchS && matchF;
+    const matchF  = filterStatus === 'All' || o.status === filterStatus;
+    const matchDoc = !myName || o.ordered_by === myName;
+    return matchS && matchF && matchDoc;
   });
 
   const openAdd  = ()  => {
-    setForm({ ...EMPTY_FORM, ordered_date: new Date().toISOString().split('T')[0] });
+    setForm({ ...EMPTY_FORM, ordered_date: new Date().toISOString().split('T')[0], ordered_by: myName || '' });
     setError('');
     setModal('add');
   };
@@ -271,7 +274,7 @@ export default function Lab() {
             </div>
             <div className="form-group">
               <label className="form-label">Ordered By *</label>
-              <input className="form-control" value={form.ordered_by} onChange={e => setForm(f => ({...f, ordered_by: e.target.value}))} placeholder="Doctor name"/>
+              <input className="form-control" value={form.ordered_by} onChange={e => setForm(f => ({...f, ordered_by: e.target.value}))} placeholder="Doctor name" readOnly={!!myName} style={myName ? { opacity: 0.7, cursor: 'not-allowed' } : {}}/>
             </div>
           </div>
           <div className="form-row">

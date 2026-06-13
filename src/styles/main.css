@@ -1497,9 +1497,10 @@ select.form-control option {
     border-radius: 18px;
   }
 
-  .portal-login-form:hover {
-    box-shadow: none;
-    border-color: var(--border);
+  .portal-login-form:hover,
+  .portal-login-form:focus-within {
+    box-shadow: 0 20px 50px rgba(0, 214, 143, 0.18);
+    border-color: rgba(0, 214, 143, 0.45);
   }
 }
 

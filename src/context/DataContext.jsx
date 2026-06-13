@@ -1,5 +1,6 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { supabase } from '../supabaseClient';
 import {
   PATIENTS, DOCTORS, APPOINTMENTS, INVOICES,
   MEDICAL_RECORDS, PHARMACY_ITEMS, DEPARTMENTS, DOCTOR_SCHEDULES, PRESCRIPTIONS, ROOMS
@@ -20,6 +21,19 @@ export function DataProvider({ children }) {
   const [rooms, setRooms] = useLocalStorage('hms_rooms', ROOMS);
 
   const generateId = (prefix) => `${prefix}${Date.now()}`;
+
+  // Sync doctors from Supabase on mount so all devices see the same list
+  useEffect(() => {
+    supabase.from('doctors').select('*').order('name').then(({ data }) => {
+      if (data && data.length > 0) {
+        setDoctors(data.map(d => ({
+          ...d,
+          schedule: d.schedule_label || '',
+          patients: d.patients_count || 0,
+        })));
+      }
+    });
+  }, []);
 
   // Patients CRUD
   const addPatient = (p) => setPatients(prev => [...prev, { ...p, id: generateId('P') }]);

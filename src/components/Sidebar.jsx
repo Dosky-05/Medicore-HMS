@@ -38,7 +38,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
 
   const closeMobile = () => setMobileOpen(false);
 
-  const handleLogout = () => { logout(); navigate('/', { replace: true }); navigate('/login'); };
+  const handleLogout = async () => { await logout(); navigate('/', { replace: true }); navigate('/login'); };
 
   const handleNav = (path) => {
     navigate(path);

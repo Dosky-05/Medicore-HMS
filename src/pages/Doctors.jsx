@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../supabaseClient';
@@ -52,11 +52,12 @@ function generateAvailableDays(workDays, weeksAhead = 4) {
 }
 
 export default function Doctors() {
-  const { doctors, addDoctor, updateDoctor, deleteDoctor, departments, schedules, addSchedule, updateSchedule } = useData();
+  const { doctors, appointments, addDoctor, updateDoctor, deleteDoctor, departments, schedules, addSchedule, updateSchedule } = useData();
   const { createStaffAccount, isAdmin } = useAuth();
 
   const [search, setSearch]       = useState('');
   const [modal, setModal]         = useState(null);
+  const [patientCounts, setPatientCounts] = useState({});
   const [form, setForm]           = useState(EMPTY);
   const [sched, setSched]         = useState(EMPTY_SCHED);
   const [selected, setSelected]   = useState(null);
@@ -67,6 +68,38 @@ export default function Doctors() {
   const [copied, setCopied]       = useState(false);
   const [saving, setSaving]       = useState(false);
   const [saveError, setSaveError] = useState('');
+
+  useEffect(() => {
+    async function fetchCounts() {
+      // Count distinct patients per doctor across both appointment sources.
+      // portal_appointments (Supabase) uses patient_id (UUID);
+      // local/staff appointments use patientId (e.g. "P001") — different namespaces, no collision.
+      const { data: portalAppts } = await supabase
+        .from('portal_appointments')
+        .select('doctor, patient_id');
+
+      const perDoctor = {}; // doctor name → Set of patient identifiers
+
+      (portalAppts || []).forEach(a => {
+        if (!a.doctor || !a.patient_id) return;
+        if (!perDoctor[a.doctor]) perDoctor[a.doctor] = new Set();
+        perDoctor[a.doctor].add(a.patient_id);
+      });
+
+      appointments.forEach(a => {
+        if (!a.doctor) return;
+        const pid = a.patientId || a.patient;
+        if (!pid) return;
+        if (!perDoctor[a.doctor]) perDoctor[a.doctor] = new Set();
+        perDoctor[a.doctor].add(pid);
+      });
+
+      const counts = {};
+      Object.entries(perDoctor).forEach(([doc, set]) => { counts[doc] = set.size; });
+      setPatientCounts(counts);
+    }
+    fetchCounts();
+  }, [appointments]);
 
   const generatePassword = () => {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%&*';
@@ -255,7 +288,7 @@ export default function Doctors() {
                 {[
                   { icon: <Building size={12} />, label: 'Dept',       value: d.department },
                   { icon: <CalendarDays size={12} />, label: 'Schedule', value: d.schedule },
-                  { icon: <Users size={12} />,    label: 'Patients',   value: d.patients },
+                  { icon: <Users size={12} />,    label: 'Patients',   value: patientCounts[d.name] ?? 0 },
                   { icon: <Star size={12} />,     label: 'Experience', value: `${d.experience} yrs` },
                 ].map(stat => (
                   <div key={stat.label} style={{ background: 'var(--bg-card)', borderRadius: 8, padding: '8px 10px' }}>

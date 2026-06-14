@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useNotifications } from '../hooks/useNotifications';
 
 const pageTitles = {
-  '/':               { title: 'Dashboard',          subtitle: "Welcome back! Here's what's happening today." },
+  '/':               { title: 'Dashboard',          subtitle: 'Hospital overview and activity summary.' },
+  '/dashboard':      { title: 'Dashboard',          subtitle: 'Hospital overview and activity summary.' },
   '/patients':       { title: 'Patients',            subtitle: 'Manage patient records and admissions.' },
   '/doctors':        { title: 'Doctors',             subtitle: 'Medical staff directory and schedules.' },
   '/appointments':   { title: 'Appointments',        subtitle: 'Schedule and manage patient appointments.' },
@@ -21,18 +22,10 @@ const pageTitles = {
 };
 
 export default function Header({ collapsed, setCollapsed, mobileOpen, setMobileOpen, path }) {
-  const { user, profile, logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const meta = (() => {
-    if (path === '/' || path === '/dashboard') {
-      const cleaned = (profile?.name || '').replace(/^Dr\.?\s+/i, '');
-      const first   = cleaned.split(' ')[0] || 'there';
-      const prefix  = profile?.role === 'doctor' ? 'Dr. ' : '';
-      return { title: `Welcome back, ${prefix}${first}!`, subtitle: "Here's what's happening today." };
-    }
-    return pageTitles[path] || { title: 'MediCore', subtitle: '' };
-  })();
+  const meta = pageTitles[path] || { title: 'MediCore', subtitle: '' };
 
   const { unreadCount } = useNotifications();
 

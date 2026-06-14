@@ -22,7 +22,7 @@ const pageTitles = {
 };
 
 export default function Header({ collapsed, setCollapsed, mobileOpen, setMobileOpen, path }) {
-  const { user, logout } = useAuth();
+  const { user, profile, logout } = useAuth();
   const navigate = useNavigate();
 
   const meta = pageTitles[path] || { title: 'MediCore', subtitle: '' };
